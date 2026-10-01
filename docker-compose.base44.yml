@@ -1,0 +1,18 @@
+services:
+  web:
+    image: node:22
+    working_dir: /app
+    volumes:
+      - .:/app
+    ports:
+      - "3000:3000"
+    # Static PWA — no build step, served directly. Edits to docs/index.html
+    # appear on refresh. Worker npm deps installed on first exec for testing.
+    command: ["sh", "-c", "cd /app/docs && exec python3 -m http.server 3000 --bind 0.0.0.0"]
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://localhost:3000/"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    restart: on-failure

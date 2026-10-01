@@ -1,5 +1,5 @@
-import sys, hashlib
-sys.path.insert(0, '/app/xmss-reference/onchain_link')
+import sys, hashlib, os
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from xmss_lib import (build_pass1, build_pass2, build_checksum_digits_to_alt, build_chain_verify,
                        build_ltree_combine_v2, build_merkle_walk, KeyMat, F, N_CHAINS, get_digit, N,
                        pd, OP_EQUAL)

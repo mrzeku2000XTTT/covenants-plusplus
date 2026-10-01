@@ -1,5 +1,5 @@
-import sys, hashlib
-sys.path.insert(0, '/app/xmss-reference/onchain_link')
+import sys, hashlib, os
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from kvm import execute, encode_num, cscript_num
 
 def pd(b):
