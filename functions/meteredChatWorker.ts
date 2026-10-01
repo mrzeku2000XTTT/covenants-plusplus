@@ -39,6 +39,18 @@ Deno.serve(async (req: Request): Promise<Response> => {
       return list && list.length ? list[0] : null;
     };
 
+    if (action === 'llm') {
+      // Local backend → Base44 LLM delegation. Secret-guarded; no metering here
+      // (the local backend owns the meter). Keeps the LLM running on Base44.
+      const prompt = String(body?.prompt || '').slice(0, 8000);
+      if (!prompt) return json({ error: 'missing_prompt' }, 400);
+      const llm = await base44.asServiceRole.integrations.Core.InvokeLLM({
+        prompt,
+        response_json_schema: { type: 'object', properties: { reply: { type: 'string' } }, required: ['reply'] },
+      });
+      return json({ ok: true, reply: String(llm?.reply || '') });
+    }
+
     if (action === 'register') {
       const { sessionId, covenantAddress, chainJson } = body;
       if (!sessionId || !covenantAddress || !chainJson) return json({ error: 'missing_fields' }, 400);
