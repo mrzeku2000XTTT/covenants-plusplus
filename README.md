@@ -1,4 +1,5 @@
 # Covenants++ — Metered AI Chat (Sentinel-x402, per-customer chains)
+[**Integrate this into your own app → INTEGRATION_PROMPT.md**](./INTEGRATION_PROMPT.md)
 
 An AI chat where **every reply bundle is prepaid on Kaspa mainnet** through a
 per-customer sentinel-x402 covenant chain — no subscriptions, no custodian,
