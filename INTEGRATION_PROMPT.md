@@ -1,7 +1,7 @@
 # Covenants++ Integration Prompt
 
 Hand this prompt to any app's AI builder agent to run Covenants++ in its own app
-(your own LLM, this repo's metering and covenant logic). Version: 2026-10-01.
+(your own LLM, this repo's metering and covenant logic). Version: 2026-10-01 (rev2: SDK-first wiring, worker-URL notes).
 
 ---
 
@@ -34,12 +34,20 @@ BUILD ORDER:
      METERED_WORKER_SECRET from env — generate a FRESH secret, set it in your app's
      Secrets page, never commit it. Expect a "missing secret" prompt on deploy until set.
 
-3. WIRING — frontend calls ONLY
+3. WIRING — if the frontend lives inside your Base44 app, call meteredChat through
+   the app's own SDK client (same-origin, survives custom domains) — not a hardcoded
+   cross-origin URL. Only an EXTERNAL frontend (e.g. the repo's static GitHub-Pages
+   PWA) needs the absolute URL:
    https://base44.app/api/apps/<your_app_id>/functions/meteredChat.
 
 4. WORKER — in your sandbox, export before every worker run:
      METERED_REGISTER_URL=https://base44.app/api/apps/<your_app_id>/functions/meteredChatWorker
      METERED_WORKER_SECRET=<same fresh secret>
+   The api/apps/<app_id>/functions/<name> form is canonical and works from any
+   sandbox regardless of the app's domain (verified by direct POST). If your app
+   has a custom domain, https://<your-domain>/functions/meteredChatWorker routes
+   to the same function and also works — but a domain-less app can ONLY use the
+   api/apps form, so default to it.
    Commands:
      node worker/build_chain.mjs --session=<id> --customer=<kaspa:|kaspatest: addr> \
        --epochs=3 --replies=10 --register
