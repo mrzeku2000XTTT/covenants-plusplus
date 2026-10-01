@@ -7,7 +7,14 @@ Covenants++ is a metered AI chat app on Kaspa. It has three parts:
 - **`worker/*.mjs`** — Node.js operator scripts for Kaspa chain building/check-in. No `package.json` exists; these are run manually by the operator.
 
 ## Running in the sandbox
-The preview serves `docs/index.html` via nginx on port 3000. The repo root is bind-mounted so that `../vendor/kaspa/kaspa.js` (imported lazily by the frontend) resolves to `/vendor/kaspa/kaspa.js`. The `vendor/` directory is **not present** in the repo — the Kaspa WASM SDK import will 404, but it's lazy-loaded inside try/catch only when the user generates/imports a key, so the page renders fine.
+The preview serves `docs/index.html` via nginx on port 3000. The repo root is bind-mounted so that `../vendor/kaspa/kaspa.js` (imported lazily by the frontend) resolves to `/vendor/kaspa/kaspa.js`.
+
+## Vendored Kaspa WASM SDK
+`vendor/kaspa/kaspa.js` + `vendor/kaspa/kaspa_bg.wasm` are the browser ESM build of the Kaspa WASM SDK, vendored from the official release (they were missing from the import). Source:
+- `https://github.com/kaspanet/rusty-kaspa/releases/download/v2.1.0/kaspa-wasm32-sdk-v2.1.0.zip` → `web/kaspa/`
+- The npm `kaspa-wasm` package is stale (0.13.0, 2023, Node-only) and does NOT contain `createInputSignature` / `SighashType` — do not use it.
+
+The frontend uses `import('../vendor/kaspa/kaspa.js')` then `await mod.default()` (wasm-bindgen `--target web` init). nginx serves `.wasm` as `application/wasm` (from the stock `mime.types`).
 
 ## Key details
 - nginx runs as `user root` (sandbox root dir is mode 700, so the default `nginx` user can't read bind-mounted files).
