@@ -15,7 +15,7 @@ Output JSON (keep in sandbox only — contains one-time signing witnesses):
 """
 import sys, os, hashlib, json, argparse
 
-sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'core'))
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'core'))
 from full_2layer_test import build_merkle_layer, build_layer_script, sign_layer  # noqa: E402
 from xmss_lib import N  # noqa: E402
 
