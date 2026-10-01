@@ -10,7 +10,11 @@
 
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.31';
 
-const WORKER_SECRET = '1f42963f25dbe6c559a96b681dbc438c524190d29ce1e7f2';
+// NEVER hardcode this value in a commit. Set METERED_WORKER_SECRET in the app's
+// Secrets page; it is available here as an env var. The operator's sandbox exports
+// the same value from a keys/ file when running worker/*.mjs.
+const WORKER_SECRET = Deno.env.get('METERED_WORKER_SECRET') || '';
+if (!WORKER_SECRET) throw new Error('METERED_WORKER_SECRET not set (app Secrets page)');
 
 const CORS: Record<string, string> = {
   'Access-Control-Allow-Origin': '*',
